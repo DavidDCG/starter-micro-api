@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const routesToken = require('./src/routes/token_routes');
 const routesLogin = require('./src/routes/login_routes');
 const routesCatalogs = require('./src/routes/catalogs_routes');
-const routesTask = require('./src/routes/task_routes');
+//const routesTask = require('./src/routes/task_routes');
 const { connectToDatabase } = require('./config/db');
 
 require('dotenv').config();
