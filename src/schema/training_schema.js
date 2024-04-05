@@ -49,7 +49,7 @@ const schemainsertTask = {
         create_date: { bsonType: 'date', description: 'debe ser una fecha y es obligatorio' },
         update_date: { bsonType: 'date', description: 'debe ser una fecha y es obligatorio' },
         autoAssign: { type: 'boolean' },
-        type_assignment: { enum: ['todos', 'segmentacion por grupo'] },
+        type_assignment: { enum: ['C','A','R'] },
         from: { bsonType: 'date' },
         to: { bsonType: 'date' },
         priority:  { enum: ['low', 'high'] }
@@ -71,9 +71,7 @@ const schemainsertTask = {
     'type_assignment',
     'from',
     'to',
-    'priority',
-    'create_date',
-    'update_date']
+    'priority' ]
   };
 
 module.exports = {
