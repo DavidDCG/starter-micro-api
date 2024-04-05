@@ -16,6 +16,8 @@ const schemaUpdateBranch = schemaData.schemaUpdateBranch;
 const schemaInsertCompany = schemaData.schemaInsertCompany;
 const schemaUpdateCompany = schemaData.schemaUpdateCompany;
 
+const schemaCategory = schemaData.schemaCategory;
+
 // Método para validar el cuerpo de la solicitud
 insert_area = (req, res, next) => {
     var db;
@@ -37,8 +39,8 @@ insert_area = (req, res, next) => {
                      db = dataReturnDB.data.dataBase;
                      client = dataReturnDB.data.dataClient;
                     return Promise.all([
-                        db.collection('hnt_areas').find( { code_area: requestBody.code_area }).toArray(),
-                        db.collection('hnt_companies').find( { _id: new ObjectId(requestBody.company_id) }).toArray()
+                        db.collection('hnt.areas').find( { code_area: requestBody.code_area }).toArray(),
+                        db.collection('hnt.companies').find( { _id: new ObjectId(requestBody.company_id) }).toArray()
                       ]);
                    
                 case false:
@@ -90,8 +92,8 @@ update_area = (req, res, next) => {
                      db = dataReturnDB.data.dataBase;
                      client = dataReturnDB.data.dataClient;
                     return Promise.all([
-                        db.collection('hnt_areas').find( { code_area: requestBody.code_area }).toArray(),
-                        db.collection('hnt_companies').find( { _id: new ObjectId(requestBody.company_id) }).toArray()
+                        db.collection('hnt.areas').find( { code_area: requestBody.code_area }).toArray(),
+                        db.collection('hnt.companies').find( { _id: new ObjectId(requestBody.company_id) }).toArray()
                       ]);
                    
                 case false:
@@ -146,7 +148,7 @@ validate_area_exists = (req, res, next) => {
                  db = dataReturnDB.data.dataBase;
                  client = dataReturnDB.data.dataClient;
                 return Promise.all([
-                    db.collection('hnt_areas').find( { _id: new ObjectId(areaId) }).toArray(),
+                    db.collection('hnt.areas').find( { _id: new ObjectId(areaId) }).toArray(),
                   ]);
                
             case false:
@@ -194,8 +196,8 @@ insert_branch = (req, res, next) => {
                      db = dataReturnDB.data.dataBase;
                      client = dataReturnDB.data.dataClient;
                     return Promise.all([
-                        db.collection('hnt_branches').find( { code_branch: requestBody.code_branch }).toArray(),
-                        db.collection('hnt_companies').find( { _id: new ObjectId(requestBody.company_id) }).toArray()
+                        db.collection('hnt.branches').find( { code_branch: requestBody.code_branch }).toArray(),
+                        db.collection('hnt.companies').find( { _id: new ObjectId(requestBody.company_id) }).toArray()
                       ]);
                    
                 case false:
@@ -237,7 +239,7 @@ validate_branch_exists = (req, res, next) => {
                  db = dataReturnDB.data.dataBase;
                  client = dataReturnDB.data.dataClient;
                 return Promise.all([
-                    db.collection('hnt_branches').find( { _id: new ObjectId(req.params.id) }).toArray(),
+                    db.collection('hnt.branches').find( { _id: new ObjectId(req.params.id) }).toArray(),
                   ]);               
             case false:
                 res.json(dataReturnDB);
@@ -281,8 +283,8 @@ update_branch = (req, res, next) => {
                      db = dataReturnDB.data.dataBase;
                      client = dataReturnDB.data.dataClient;
                     return Promise.all([
-                        db.collection('hnt_branches').find( { code_branch: requestBody.code_branch }).toArray(),
-                        db.collection('hnt_companies').find( { _id: new ObjectId(requestBody.company_id) }).toArray()
+                        db.collection('hnt.branches').find( { code_branch: requestBody.code_branch }).toArray(),
+                        db.collection('hnt.companies').find( { _id: new ObjectId(requestBody.company_id) }).toArray()
                       ]);
                    
                 case false:
@@ -340,7 +342,7 @@ insert_company = (req, res, next) => {
                      db = dataReturnDB.data.dataBase;
                      client = dataReturnDB.data.dataClient;
                     return Promise.all([
-                        db.collection('hnt_companies').find( { cvecia: requestBody.cvecia }).toArray(),
+                        db.collection('hnt.companies').find( { cvecia: requestBody.cvecia }).toArray(),
                       ]);
                    
                 case false:
@@ -376,7 +378,7 @@ validate_company_exists = (req, res, next) => {
                  db = dataReturnDB.data.dataBase;
                  client = dataReturnDB.data.dataClient;
                 return Promise.all([
-                    db.collection('hnt_companies').find( { _id: new ObjectId(req.params.id) }).toArray(),
+                    db.collection('hnt.companies').find( { _id: new ObjectId(req.params.id) }).toArray(),
                   ]);               
             case false:
                 res.json(dataReturnDB);
@@ -400,6 +402,27 @@ validate_company_exists = (req, res, next) => {
     });
 }
 
+
+// Método para validar el cuerpo de la solicitud
+insert_category = (req, res, next) => {
+    const requestBody = req.body;
+    const validationResult = validator.validate(requestBody, schemaCategory);
+    const errors = validationResult.errors.map(error => error.stack);
+    if (!validationResult.valid) {
+        dataReturn.message = "formato de insert no válido";
+        dataReturn.valid = false;
+        dataReturn.data = errors;
+        dataReturn.type = "catalogs"
+        res.status(400).json(dataReturn);
+    }
+    else{
+        next();
+    }
+   
+}
+
+
+
 module.exports = {
     insert_area,
     update_area,
@@ -408,5 +431,6 @@ module.exports = {
     validate_branch_exists,
     update_branch,
     insert_company,
-    validate_company_exists   
+    validate_company_exists,
+    insert_category   
 };

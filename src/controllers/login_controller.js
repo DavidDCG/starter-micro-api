@@ -22,13 +22,13 @@ const login =  (req = request, res = response) => {
        client = dataReturnDB.data.dataClient;
       switch (dataReturnDB.valid) {
         case true:      
-          return db.collection('hnt_employees').aggregate([
+          return db.collection('hnt.employees').aggregate([
             {
               $match: { user: user.user, password: user.password, active: true }
             },
             {
               $lookup: {
-                from: "hnt_roles",
+                from: "hnt.roles",
                 localField: "role_id",
                 foreignField: "_id",
                 as: "data_role"
@@ -36,7 +36,7 @@ const login =  (req = request, res = response) => {
             },
             {
               $lookup: {
-                from: "hnt_areas",
+                from: "hnt.areas",
                 localField: "area_id",
                 foreignField: "_id",
                 as: "data_area"
@@ -44,7 +44,7 @@ const login =  (req = request, res = response) => {
             },
             {
               $lookup: {
-                from: "hnt_branches",
+                from: "hnt.branches",
                 localField: "branch_id",
                 foreignField: "_id",
                 as: "data_branch"
@@ -52,7 +52,7 @@ const login =  (req = request, res = response) => {
             },
             {
               $lookup: {
-                from: "hnt_roles",
+                from: "hnt.roles",
                 localField: "role_id",
                 foreignField: "_id",
                 as: "data_role"
@@ -60,7 +60,7 @@ const login =  (req = request, res = response) => {
             },
             {
               $lookup: {
-                from: "hnt_companies",
+                from: "hnt.companies",
                 localField: "data_branch.company_id",
                 foreignField: "_id",
                 as: "company_data_branch"
@@ -68,7 +68,7 @@ const login =  (req = request, res = response) => {
             },
             {
               $lookup: {
-                from: "hnt_companies",
+                from: "hnt.companies",
                 localField: "data_area.company_id",
                 foreignField: "_id",
                 as: "company_data_area"
@@ -76,7 +76,7 @@ const login =  (req = request, res = response) => {
             },
             {
               $lookup: {
-                from: "hnt_config_permissions",
+                from: "hnt.config_permissions",
                 localField: "role_id",
                 foreignField: "role_id",
                 as: "data_config_modules"
@@ -84,7 +84,7 @@ const login =  (req = request, res = response) => {
             },
             {
               $lookup: {
-                from: "hnt_config_modules",
+                from: "hnt.config_modules",
                 localField: "data_config_modules.module_id",
                 foreignField: "_id",
                 as: "data_modules"
@@ -92,7 +92,7 @@ const login =  (req = request, res = response) => {
             },
             {
               $lookup: {
-                from: "hnt_companies",
+                from: "hnt.companies",
                 localField: "data_branch.branch_id",
                 foreignField: "_id",
                 as: "company_data_branch"

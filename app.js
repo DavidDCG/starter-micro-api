@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const routesToken = require('./src/routes/token_routes');
 const routesLogin = require('./src/routes/login_routes');
 const routesCatalogs = require('./src/routes/catalogs_routes');
-//const routesTask = require('./src/routes/task_routes');
+const routesTasks = require('./src/routes/training_routes');
 const { connectToDatabase } = require('./config/db');
 
 require('dotenv').config();
@@ -27,7 +27,7 @@ connectToDatabase().then((dataReturn) => {
       app.use('/token', routesToken);
       app.use('/login', routesLogin);
       app.use('/catalogs', routesCatalogs);
-      app.use('/training', routesCatalogs);
+     app.use('/training', routesTasks);
       // Inicia el servidor
       const PORT = process.env.PORT; //|| 3000;
       app.listen(PORT, () => {
@@ -51,3 +51,7 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Error interno del servidor' + err.stack });
 });
+
+
+
+

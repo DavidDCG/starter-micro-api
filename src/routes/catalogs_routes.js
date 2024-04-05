@@ -60,4 +60,17 @@ router.put('/companies/:id',  authMiddleware.verifyToken, catalogsMiddleware.val
 });
 
 
+// Ruta para consultar
+router.get('/categories',authMiddleware.verifyToken, (req, res) => {
+    catalogsController.get_categories(req, res);
+});
+
+
+// Ruta para insertar una nueva área
+router.post('/categories', authMiddleware.verifyToken,catalogsMiddleware.insert_category, (req, res) => {
+    catalogsController.insert_category(req, res);
+});
+
+
+
 module.exports = router;

@@ -13,7 +13,7 @@ const generateToken = (req = request, res = response) => {
       case true:
          db = dataReturnDB.data.dataBase;
          client = dataReturnDB.data.dataClient;
-        return db.collection('hnt_employees').find({ nameUser: user.username, password: user.password }).toArray();
+        return db.collection('hnt.employees').find({ nameUser: user.username, password: user.password }).toArray();
       case false:
         res.json(dataReturnDB);
         break;

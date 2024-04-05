@@ -60,11 +60,26 @@ const schemaUpdateCompany = {
 };
 
 
+// Definir el esquema JSON
+const schemaCategory = {
+    "type": "object",
+    "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "active": { "type": "boolean" },
+        "route_icon": { "type": "string" }
+    },
+    "required": ["name", "description","active","route_icon"]
+};
+
+
+
 module.exports = {
     schemaInsertArea,
     schemaUpdateArea,
     schemaInsertBranch,
     schemaUpdateBranch,
     schemaInsertCompany, 
-    schemaUpdateCompany   
+    schemaUpdateCompany,
+    schemaCategory   
 };
