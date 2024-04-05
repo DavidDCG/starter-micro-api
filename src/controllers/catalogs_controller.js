@@ -690,6 +690,8 @@ const insert_category = (req = request, res = response) => {
         var db; // Variable para almacenar el cliente de MongoDB
         req.body.create_date = new Date();
         req.body.update_date = new Date();
+        req.body.active = true;
+
         connectToDatabase().then((dataReturnDB) => {
              db = dataReturnDB.data.dataBase;
              client = dataReturnDB.data.dataClient;

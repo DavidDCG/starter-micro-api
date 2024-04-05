@@ -66,10 +66,9 @@ const schemaCategory = {
     "properties": {
         "name": { "type": "string" },
         "description": { "type": "string" },
-        "active": { "type": "boolean" },
-        "route_icon": { "type": "string" }
+        "img_path": { "type": "string" }
     },
-    "required": ["name", "description","active","route_icon"]
+    "required": ["name", "description","img_path"]
 };
 
 
