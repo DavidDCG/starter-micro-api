@@ -14,6 +14,11 @@ validate_task = (req, res, next) => {
     var db;
     var client;
     const requestBody = req.body;
+
+
+
+console.log(schemaTask);
+
     const validationResult = validator.validate(requestBody, schemaTask);
     const errors = validationResult.errors.map(error => error.stack);
     if (!validationResult.valid) {
@@ -24,7 +29,7 @@ validate_task = (req, res, next) => {
         res.status(400).json(dataReturn);
     }
     else {
-
+            console.log(validationResult);
            // Accediendo a los atributos de segmentation
            const segmentation = requestBody.segmentation;
            const areas = segmentation.areas;
