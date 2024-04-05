@@ -41,14 +41,14 @@ const insert_task = (req = request, res = response) => {
 
         console.log(req.body);
         connectToDatabase().then((dataReturnDB) => {
-             db = dataReturnDB.data.dataBase;
-             client = dataReturnDB.data.dataClient;
-            return db.collection('training.tasks').insertOne(req.body);         
+            db = dataReturnDB.data.dataBase;
+            client = dataReturnDB.data.dataClient;
+            return db.collection('training.tasks').insertOne(req.body);
 
-        }).then(async(dataReturnResult) => {
+        }).then(async (dataReturnResult) => {
 
-            if (dataReturnResult.acknowledged) {                
-                getUsersSegmentation(req, res,areas, branches, companies,type_collaborators,dataReturnResult)
+            if (dataReturnResult.acknowledged) {
+                getUsersSegmentation(req, res, areas, branches, companies, type_collaborators, dataReturnResult)
             } else {
                 dataReturn.valid = false;
                 dataReturn.type = "error";
@@ -56,7 +56,7 @@ const insert_task = (req = request, res = response) => {
                 dataReturn.data = dataReturnResult
                 res.json(dataReturn);
             }
-          
+
             await client.close();
         }).catch((err) => {
             dataReturn.valid = false;
@@ -78,17 +78,17 @@ const insert_task = (req = request, res = response) => {
 };
 
 
-const getUsersSegmentation = (req = request, res = response, areas, branches, companies,type_collaborators,dataReturnResultTask) => {
+const getUsersSegmentation = (req = request, res = response, areas, branches, companies, type_collaborators, dataReturnResultTask) => {
     try {
 
         var client; // Variable para almacenar el cliente de MongoDB
         var db; // Variable para almacenar el cliente de MongoDB
 
         connectToDatabase().then((dataReturnDB) => {
-             db = dataReturnDB.data.dataBase;
-             client = dataReturnDB.data.dataClient;
-             
-             const filtro = {
+            db = dataReturnDB.data.dataBase;
+            client = dataReturnDB.data.dataClient;
+
+            const filtro = {
                 $or: [
                     { company_id: { $in: companies } },
                     { area_id: { $in: areas } },
@@ -97,15 +97,15 @@ const getUsersSegmentation = (req = request, res = response, areas, branches, co
                 ]
             };
 
-            return db.collection('hnt.employees').find(filtro).toArray();        
+            return db.collection('hnt.employees').find(filtro).toArray();
 
-        }).then(async(dataReturnResult) => {
+        }).then(async (dataReturnResult) => {
 
             console.log("USUARIOS encontrados");
             console.log(dataReturnResult);
 
             if (dataReturnResult.length > 0) {
-                insertOnbordingUsers(req, res, dataReturnResult, dataReturnResultTask)           
+                insertOnbordingUsers(req, res, dataReturnResult, dataReturnResultTask)
             } else {
                 dataReturn.valid = true;
                 dataReturn.type = "success";
@@ -113,7 +113,7 @@ const getUsersSegmentation = (req = request, res = response, areas, branches, co
                 dataReturn.data = dataReturnResultTask
                 res.json(dataReturn);
             }
-           
+
             await client.close();
         }).catch((err) => {
             dataReturn.valid = false;
@@ -144,30 +144,30 @@ const insertOnbordingUsers = (req, res, dataUserMatch, dataReturnResultTask) => 
 
         var userInsert = [];
         dataUserMatch.forEach((elemento, indice, dataUserMatch) => {
-             userInsert.push({       
+            userInsert.push({
                 task_id: dataReturnResultTask.insertedId,
                 user_id: elemento._id,
                 status: "Not Started",
                 expiration: new Date(),
-                create_date:new Date(),
+                create_date: new Date(),
                 update_date: new Date()
-        })
+            })
         });
 
         var client; // Variable para almacenar el cliente de MongoDB
         var db; // Variable para almacenar el cliente de MongoDB
 
 
-        console.log("Datos",userInsert);
+        console.log("Datos", userInsert);
 
         connectToDatabase().then((dataReturnDB) => {
-             db = dataReturnDB.data.dataBase;
-             client = dataReturnDB.data.dataClient;
-            return db.collection('training.onbording_users').insertMany(userInsert);         
+            db = dataReturnDB.data.dataBase;
+            client = dataReturnDB.data.dataClient;
+            return db.collection('training.onbording_users').insertMany(userInsert);
 
-        }).then(async(dataReturnResult) => {
+        }).then(async (dataReturnResult) => {
 
-            if (dataReturnResult.acknowledged) {                
+            if (dataReturnResult.acknowledged) {
                 dataReturn.valid = true;
                 dataReturn.type = "succes";
                 dataReturn.message = "tarea y usuarios insertados correctamente";
@@ -180,7 +180,7 @@ const insertOnbordingUsers = (req, res, dataUserMatch, dataReturnResultTask) => 
                 dataReturn.data = dataReturnResult
                 res.json(dataReturn);
             }
-          
+
             await client.close();
         }).catch((err) => {
             dataReturn.valid = false;
@@ -202,7 +202,90 @@ const insertOnbordingUsers = (req, res, dataUserMatch, dataReturnResultTask) => 
 };
 
 
+const getTasks = (req = request, res = response) => {
+    try {
+        var client; // Variable para almacenar el cliente de MongoDB
+        var db; // Variable para almacenar el cliente de MongoDB
+        connectToDatabase().then((dataReturnDB) => {
+            db = dataReturnDB.data.dataBase;
+            client = dataReturnDB.data.dataClient;
 
-module.exports = {  
-    insert_task, 
+            let dataReturn = {
+                '_id': 1,
+                'title': 1,
+                'icon_path': 1,
+                'content': 1,
+                'attachments': 1,
+                'expiration_amount': 1,
+                'has_expiration': 1,
+                'expiration_sequence': 1,
+                'category_id': 1,
+                'send_notification': 1,
+                'segmentation_type': 1,
+                'segmentation': 1,
+                'autoAssign': 1,
+                'type_assignment': 1,
+                'from': 1,
+                'to': 1,
+                'priority': 1,
+                'create_date': 1,
+                'update_date': 1
+            }
+
+
+            let pipeline = [];
+
+            const taskId = req.params.id; // Obtener el ID del área desde los parámetros de la URL
+            // Agregar la etapa $match solo si se proporciona un valor para filtrar
+            if (genericFunction.isValidValue(taskId)) {
+                pipeline.push({ $match: { '_id': new ObjectId(taskId) } });
+            }
+
+            // Agregar la etapa $project para proyectar los campos deseados
+            pipeline.push({ $project: dataReturn });
+
+            console.log(pipeline)
+
+            return db.collection('training.tasks').aggregate(pipeline).toArray();
+
+        }).then(async (dataReturnResult) => {
+
+            console.log(dataReturnResult);
+
+            if (dataReturnResult.length > 0) {
+                dataReturn.valid = true;
+                dataReturn.type = "success";
+                dataReturn.message = "consulta correcta";
+                dataReturn.data = dataReturnResult
+            } else {
+                dataReturn.valid = true;
+                dataReturn.type = "success";
+                dataReturn.message = "sin registros encontrados";
+                dataReturn.data = dataReturnResult;
+            }
+            res.json(dataReturn);
+            await client.close()
+        }).catch(async (err) => {
+            dataReturn.valid = false;
+            dataReturn.type = "error";
+            dataReturn.message = "error interno del servidor: " + err;
+            dataReturn.data = err;
+            res.json(dataReturn);
+        });
+
+    } catch (err) {
+        const dataReturn = {
+            valid: false,
+            type: "error",
+            message: "error interno del servidor: " + err.message,
+            data: err
+        };
+        return res.json(dataReturn);
+    }
+};
+
+
+module.exports = {
+    insert_task,
+    getTasks
 };

@@ -8,4 +8,17 @@ router.post('/task', authMiddleware.verifyToken,trainingMiddleware.validate_task
     trainingController.insert_task(req, res);
 });
 
+// Ruta para insertar una nueva área
+router.get('/task', authMiddleware.verifyToken, (req, res) => {
+    trainingController.getTasks(req, res);
+});
+
+// Ruta para insertar una nueva área
+router.get('/task/:id', authMiddleware.verifyToken, (req, res) => {
+    trainingController.getTasks(req, res);
+});
+
+
+
+
 module.exports = router;
