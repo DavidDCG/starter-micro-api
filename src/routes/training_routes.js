@@ -18,7 +18,14 @@ router.get('/task/:id', authMiddleware.verifyToken, (req, res) => {
     trainingController.getTasks(req, res);
 });
 
+// Ruta para insertar una nueva área
+router.get('/onbording_users', authMiddleware.verifyToken, (req, res) => {
+    trainingController.onbording_users(req, res);
+});
 
-
+// Ruta para insertar una nueva área
+router.get('/onbording_users/:id', authMiddleware.verifyToken, (req, res) => {
+    trainingController.onbording_users(req, res);
+});
 
 module.exports = router;

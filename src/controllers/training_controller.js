@@ -284,8 +284,97 @@ const getTasks = (req = request, res = response) => {
     }
 };
 
+const onbording_users = (req = request, res = response) => {
+    try {
+        var client; // Variable para almacenar el cliente de MongoDB
+        var db; // Variable para almacenar el cliente de MongoDB
+        connectToDatabase().then((dataReturnDB) => {
+            db = dataReturnDB.data.dataBase;
+            client = dataReturnDB.data.dataClient; 
+                  
+
+            let dataReturn_onbording = [
+                // Unir la colección onbording_users con la colección tasks usando $lookup
+                {
+                    $lookup: {
+                        from: 'training.tasks',
+                        localField: 'task_id',
+                        foreignField: '_id',
+                        as: 'task'
+                    }
+                },    
+                { $unwind: '$task' },     
+                // Unir la colección task con la colección employees usando $lookup
+                {
+                    $lookup: {
+                        from: 'hnt.employees',
+                        localField: 'user_id',
+                        foreignField: '_id',
+                        as: 'employee'
+                    }
+                },
+                { $unwind: '$employee' },
+                // Proyectar los campos requeridos
+                {
+                    $project: {
+                        _id: 1,
+                        task_id: '$task_id',
+                        status: 1,
+                        priorty: '$task.priority',
+                        content: '$task.content',
+                        create_date: '$task.create_date',
+                        name_employee: '$employee.name',
+                        category_id: '$task.category_id'
+                    }
+                }
+            ]
+   
+            const taskId = req.params.id; // Obtener el ID del área desde los parámetros de la URL
+            // Agregar la etapa $match solo si se proporciona un valor para filtrar
+            if (genericFunction.isValidValue(taskId)) {
+                dataReturn_onbording.push({ $match: { '_id': new ObjectId(taskId) } });
+            }           
+            return db.collection('training.onbording_users').aggregate(dataReturn_onbording).toArray();
+
+        }).then(async (dataReturnResult) => {
+
+            console.log(dataReturnResult);
+
+            if (dataReturnResult.length > 0) {
+                dataReturn.valid = true;
+                dataReturn.type = "success";
+                dataReturn.message = "consulta correcta";
+                dataReturn.data = dataReturnResult
+            } else {
+                dataReturn.valid = true;
+                dataReturn.type = "success";
+                dataReturn.message = "sin registros encontrados";
+                dataReturn.data = dataReturnResult;
+            }
+            res.json(dataReturn);
+            await client.close()
+        }).catch(async (err) => {
+            dataReturn.valid = false;
+            dataReturn.type = "error";
+            dataReturn.message = "error interno del servidor: " + err;
+            dataReturn.data = err;
+            res.json(dataReturn);
+        });
+
+    } catch (err) {
+        const dataReturn = {
+            valid: false,
+            type: "error",
+            message: "error interno del servidor: " + err.message,
+            data: err
+        };
+        return res.json(dataReturn);
+    }
+};
+
 
 module.exports = {
     insert_task,
-    getTasks
+    getTasks,
+    onbording_users
 };
