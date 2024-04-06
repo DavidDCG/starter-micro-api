@@ -533,8 +533,6 @@ const get_categories_onbording_distinct = (req, res, data_categories) => {
 
 }
 
-
-
 const categories_task = (req = request, res = response) => {
     try {
         var client; // Variable para almacenar el cliente de MongoDB
@@ -576,7 +574,6 @@ const categories_task = (req = request, res = response) => {
         }).then(async (dataReturnResult) => {
 
             console.log(dataReturnResult);
-
             if (dataReturnResult.length > 0) {              
             // Suponiendo que tienes dataReturnResult ya definido
             // Utilizamos un conjunto para garantizar valores únicos
@@ -619,5 +616,6 @@ module.exports = {
     insert_task,
     getTasks,
     onbording_users,
-    categories_onbording
+    categories_onbording,
+    categories_task
 };

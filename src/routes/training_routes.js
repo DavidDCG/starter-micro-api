@@ -38,6 +38,11 @@ router.get('/categories_onbording/:id', authMiddleware.verifyToken, (req, res) =
     trainingController.categories_onbording(req, res);
 });
 
+// Ruta para insertar una nueva área
+router.get('/categories_task/', authMiddleware.verifyToken, (req, res) => {
+    trainingController.categories_task(req, res);
+});
+
 
 
 
