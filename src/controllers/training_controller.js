@@ -326,13 +326,16 @@ const onbording_users = (req = request, res = response) => {
                         name_employee: '$employee.name',
                         category_id: '$task.category_id'
                     }
-                }
+                },           
             ]
+
+            
+
    
             const taskId = req.params.id; // Obtener el ID del área desde los parámetros de la URL
             // Agregar la etapa $match solo si se proporciona un valor para filtrar
             if (genericFunction.isValidValue(taskId)) {
-                dataReturn_onbording.push({ $match: { '_id': new ObjectId(taskId) } });
+                dataReturn_onbording.push({ $match: { 'category_id': new ObjectId(taskId) } });
             }           
             return db.collection('training.onbording_users').aggregate(dataReturn_onbording).toArray();
 
