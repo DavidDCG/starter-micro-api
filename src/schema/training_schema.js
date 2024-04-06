@@ -49,7 +49,7 @@ const schemainsertTask = {
         create_date: { bsonType: 'date', description: 'debe ser una fecha y es obligatorio' },
         update_date: { bsonType: 'date', description: 'debe ser una fecha y es obligatorio' },
         autoAssign: { type: 'boolean' },
-        type_assignment: { enum: ['C','A','R'] },
+        type_assignment: { enum: ['C','A','R','T',''] },
         from: { bsonType: 'date' },
         to: { bsonType: 'date' },
         priority:  { enum: ['low', 'high'] }

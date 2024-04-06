@@ -28,4 +28,17 @@ router.get('/onbording_users/:id', authMiddleware.verifyToken, (req, res) => {
     trainingController.onbording_users(req, res);
 });
 
+// Ruta para insertar una nueva área
+router.get('/categories_onbording/', authMiddleware.verifyToken, (req, res) => {
+    trainingController.categories_onbording(req, res);
+});
+
+// Ruta para insertar una nueva área
+router.get('/categories_onbording/:id', authMiddleware.verifyToken, (req, res) => {
+    trainingController.categories_onbording(req, res);
+});
+
+
+
+
 module.exports = router;

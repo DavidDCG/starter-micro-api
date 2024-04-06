@@ -704,7 +704,7 @@ const insert_category = (req = request, res = response) => {
             if (dataReturnResult.acknowledged) {
                 dataReturn.valid = true;
                 dataReturn.type = "success";
-                dataReturn.message = "la compania se insertó correctamente.";
+                dataReturn.message = "la categoría se insertó correctamente.";
                 dataReturn.data = dataReturnResult
             } else {
                 dataReturn.valid = false;
