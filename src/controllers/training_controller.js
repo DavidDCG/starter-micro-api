@@ -291,7 +291,7 @@ const onbording_users = (req = request, res = response) => {
         connectToDatabase().then((dataReturnDB) => {
             db = dataReturnDB.data.dataBase;
             client = dataReturnDB.data.dataClient; 
-                  
+                
 
             let dataReturn_onbording = [
                 // Unir la colección onbording_users con la colección tasks usando $lookup
@@ -319,6 +319,7 @@ const onbording_users = (req = request, res = response) => {
                     $project: {
                         _id: 1,
                         task_id: '$task_id',
+                        title: '$task.title',
                         status: 1,
                         priorty: '$task.priority',
                         content: '$task.content',
@@ -329,9 +330,6 @@ const onbording_users = (req = request, res = response) => {
                 },           
             ]
 
-            
-
-   
             const taskId = req.params.id; // Obtener el ID del área desde los parámetros de la URL
             // Agregar la etapa $match solo si se proporciona un valor para filtrar
             if (genericFunction.isValidValue(taskId)) {
