@@ -638,6 +638,7 @@ const get_categories = (req = request, res = response) => {
                     $project: {
                         'name': 1,
                         'description': 1,
+                        'img_path': 1,
                         'active': 1,
                         'route_icon': 1,
                         'create_date': 1,
