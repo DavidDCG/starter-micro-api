@@ -319,6 +319,7 @@ const onbording_users = (req = request, res = response) => {
                     $project: {
                         _id: 1,
                         task_id: '$task_id',
+                        title: '$task.title',
                         status: 1,
                         priorty: '$task.priority',
                         content: '$task.content',
@@ -531,6 +532,86 @@ const get_categories_onbording_distinct = (req, res, data_categories) => {
 
 
 }
+
+
+
+const categories_task = (req = request, res = response) => {
+    try {
+        var client; // Variable para almacenar el cliente de MongoDB
+        var db; // Variable para almacenar el cliente de MongoDB
+        connectToDatabase().then((dataReturnDB) => {
+            db = dataReturnDB.data.dataBase;
+            client = dataReturnDB.data.dataClient; 
+                
+            let dataReturn = {
+                "category_id": "$_id",
+                'title': 1,
+                'icon_path': 1,
+                'content': 1,
+                'attachments': 1,
+                'expiration_amount': 1,
+                'has_expiration': 1,
+                'expiration_sequence': 1,
+                'category_id': 1,
+                'send_notification': 1,
+                'segmentation_type': 1,
+                'segmentation': 1,
+                'autoAssign': 1,
+                'type_assignment': 1,
+                'from': 1,
+                'to': 1,
+                'priority': 1,
+                'create_date': 1,
+                'update_date': 1
+            }
+
+
+            let pipeline = [];
+            // Agregar la etapa $project para proyectar los campos deseados
+            pipeline.push({ $project: dataReturn });
+
+            console.log(pipeline)
+
+            return db.collection('training.tasks').aggregate(pipeline).toArray();
+        }).then(async (dataReturnResult) => {
+
+            console.log(dataReturnResult);
+
+            if (dataReturnResult.length > 0) {              
+            // Suponiendo que tienes dataReturnResult ya definido
+            // Utilizamos un conjunto para garantizar valores únicos
+            const uniqueCategoryIds = new Set(dataReturnResult.map(task => task.category_id.toString()));
+            // Convertimos el conjunto de nuevo en un array
+            const uniqueCategoryIdsArray = [...uniqueCategoryIds].map(id => new ObjectId(id));
+            get_categories_onbording_distinct(req, res, uniqueCategoryIdsArray)
+            } else {
+                dataReturn.valid = true;
+                dataReturn.type = "success";
+                dataReturn.message = "sin registros encontrados";
+                dataReturn.data = dataReturnResult;
+                res.json(dataReturn);
+
+            }         
+            await client.close()
+        }).catch(async (err) => {
+            dataReturn.valid = false;
+            dataReturn.type = "error";
+            dataReturn.message = "error interno del servidor: " + err;
+            dataReturn.data = err;
+            res.json(dataReturn);
+        });
+
+    } catch (err) {
+        const dataReturn = {
+            valid: false,
+            type: "error",
+            message: "error interno del servidor: " + err.message,
+            data: err
+        };
+        return res.json(dataReturn);
+    }
+};
+
 
 
 
